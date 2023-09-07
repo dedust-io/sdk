@@ -1,0 +1,12 @@
+/**
+ * (C) Copyright 2023, Scaleton Labs LLC
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+export interface AssetMetadata {
+  name: string;
+  symbol: string;
+  image: string;
+  decimals: number;
+}

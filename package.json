@@ -1,0 +1,39 @@
+{
+  "name": "@dedust/sdk",
+  "version": "0.8.2",
+  "description": "SDK for DeDust Protocol v2",
+  "license": "Apache-2.0",
+  "homepage": "https://dedust.io",
+  "author": {
+    "name": "Scaleton Labs LLC"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "dedust",
+    "ton"
+  ],
+  "devDependencies": {
+    "@ton/core": "^0.52.0",
+    "@ton/crypto": "^3.2.0",
+    "@tsconfig/node18": "^18.2.1",
+    "@types/node": "^20.5.9",
+    "axios": "^1.5.0",
+    "prettier": "^3.0.3",
+    "ton-crypto": "^3.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "axios": ">=1.5.0",
+    "@ton/core": ">=0.52.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "fmt": "prettier . --write",
+    "prepublish": "tsc"
+  }
+}
