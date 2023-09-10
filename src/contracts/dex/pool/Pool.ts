@@ -5,7 +5,7 @@
  */
 
 import { Address, Contract, ContractProvider } from '@ton/core';
-import { Asset } from '../common';
+import { Asset, ReadinessStatus } from '../common';
 import { PoolType } from './PoolType';
 
 export class Pool implements Contract {
@@ -13,6 +13,17 @@ export class Pool implements Contract {
 
   static createFromAddress(address: Address) {
     return new Pool(address);
+  }
+
+  async getReadinessStatus(provider: ContractProvider): Promise<ReadinessStatus> {
+    const state = await provider.getState();
+    if (state.state.type !== 'active') {
+      return ReadinessStatus.NOT_DEPLOYED;
+    }
+
+    const reserves = await this.getReserves(provider);
+
+    return reserves[0] > 0n && reserves[1] > 0n ? ReadinessStatus.READY : ReadinessStatus.NOT_READY;
   }
 
   async getPoolType(provider: ContractProvider): Promise<PoolType> {

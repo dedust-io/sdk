@@ -5,6 +5,7 @@
  */
 
 import { Address, beginCell, Cell, Contract, ContractProvider } from '@ton/core';
+import { JettonWallet } from './JettonWallet';
 
 export class JettonRoot implements Contract {
   private constructor(readonly address: Address) {}
@@ -13,12 +14,16 @@ export class JettonRoot implements Contract {
     return new JettonRoot(address);
   }
 
-  async getWalletAddress(provider: ContractProvider, owner: Address): Promise<Address> {
+  async getWalletAddress(provider: ContractProvider, ownerAddress: Address): Promise<Address> {
     const result = await provider.get('get_wallet_address', [
-      { type: 'slice', cell: beginCell().storeAddress(owner).endCell() },
+      { type: 'slice', cell: beginCell().storeAddress(ownerAddress).endCell() },
     ]);
 
     return result.stack.readAddress();
+  }
+
+  async getWallet(provider: ContractProvider, ownerAddress: Address): Promise<JettonWallet> {
+    return JettonWallet.createFromAddress(await this.getWalletAddress(provider, ownerAddress));
   }
 
   async getJettonData(provider: ContractProvider): Promise<{

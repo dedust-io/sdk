@@ -6,7 +6,7 @@
 
 import { Address, beginCell, Cell, ContractProvider } from '@ton/core';
 import { SwapParams, SwapStep, Vault } from './Vault';
-import { Asset } from '../common';
+import { Asset, ReadinessStatus } from '../common';
 
 export class VaultJetton extends Vault {
   static readonly DEPOSIT_LIQUIDITY = 0x40e108d6;
@@ -20,9 +20,15 @@ export class VaultJetton extends Vault {
     return new VaultJetton(address);
   }
 
-  async getIsReady(provider: ContractProvider): Promise<boolean> {
-    const result = await provider.get('is_ready', []);
-    return result.stack.readBoolean();
+  async getReadinessStatus(provider: ContractProvider): Promise<ReadinessStatus> {
+    const state = await provider.getState();
+    if (state.state.type !== 'active') {
+      return ReadinessStatus.NOT_DEPLOYED;
+    }
+
+    const { stack } = await provider.get('is_ready', []);
+
+    return stack.readBoolean() ? ReadinessStatus.READY : ReadinessStatus.NOT_READY;
   }
 
   /**

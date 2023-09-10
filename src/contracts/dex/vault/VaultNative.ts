@@ -6,7 +6,7 @@
 
 import { Address, beginCell, Cell, ContractProvider, Sender, SendMode, toNano } from '@ton/core';
 import { SwapParams, SwapStep, Vault } from './Vault';
-import { Asset } from '../common';
+import { Asset, ReadinessStatus } from '../common';
 
 export class VaultNative extends Vault {
   static readonly DEPOSIT_LIQUIDITY = 0xd55e4686;
@@ -18,6 +18,15 @@ export class VaultNative extends Vault {
 
   static createFromAddress(address: Address) {
     return new VaultNative(address);
+  }
+
+  async getReadinessStatus(provider: ContractProvider): Promise<ReadinessStatus> {
+    const state = await provider.getState();
+    if (state.state.type !== 'active') {
+      return ReadinessStatus.NOT_DEPLOYED;
+    }
+
+    return ReadinessStatus.READY;
   }
 
   async sendDepositLiquidity(

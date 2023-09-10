@@ -8,3 +8,4 @@ export * from './Asset';
 export * from './AssetError';
 export * from './AssetType';
 export * from './ContractType';
+export * from './ReadinessStatus';

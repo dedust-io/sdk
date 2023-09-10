@@ -5,7 +5,7 @@
  */
 
 import { Address, beginCell, Cell, Contract, ContractProvider } from '@ton/core';
-import { Asset } from '../common';
+import { Asset, ReadinessStatus } from '../common';
 
 export interface SwapStep {
   poolAddress: Address;
@@ -23,6 +23,8 @@ export interface SwapParams {
 
 export abstract class Vault implements Contract {
   protected constructor(readonly address: Address) {}
+
+  abstract getReadinessStatus(provider: ContractProvider): Promise<ReadinessStatus>;
 
   async getAsset(provider: ContractProvider): Promise<Asset> {
     const result = await provider.get('get_asset', []);

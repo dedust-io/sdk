@@ -13,8 +13,9 @@ import {
   SendMode,
   toNano,
 } from '@ton/core';
-import { PoolType } from '../pool';
+import { Pool, PoolType } from '../pool';
 import { Asset } from '../common';
+import { VaultJetton, VaultNative } from '../vault';
 
 export class Factory implements Contract {
   static readonly CREATE_VAULT = 0x21cfe02b;
@@ -48,6 +49,18 @@ export class Factory implements Contract {
     ]);
 
     return result.stack.readAddress();
+  }
+
+  async getNativeVault(provider: ContractProvider): Promise<VaultNative> {
+    const nativeVaultAddress = await this.getVaultAddress(provider, Asset.native());
+
+    return VaultNative.createFromAddress(nativeVaultAddress);
+  }
+
+  async getJettonVault(provider: ContractProvider, jettonRoot: Address): Promise<VaultJetton> {
+    const jettonVaultAddress = await this.getVaultAddress(provider, Asset.jetton(jettonRoot));
+
+    return VaultJetton.createFromAddress(jettonVaultAddress);
   }
 
   async sendCreateVolatilePool(
@@ -84,6 +97,19 @@ export class Factory implements Contract {
     ]);
 
     return result.stack.readAddress();
+  }
+
+  async getPool(
+    provider: ContractProvider,
+    poolType: PoolType,
+    assets: [Asset, Asset],
+  ): Promise<Pool> {
+    const poolAddress = await this.getPoolAddress(provider, {
+      poolType,
+      assets,
+    });
+
+    return Pool.createFromAddress(poolAddress);
   }
 
   async getLiquidityDepositAddress(
