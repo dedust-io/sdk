@@ -7,6 +7,7 @@
 import { Address, beginCell, Cell, ContractProvider, Sender, SendMode, toNano } from '@ton/core';
 import { SwapParams, SwapStep, Vault } from './Vault';
 import { Asset, ReadinessStatus } from '../common';
+import { PoolType } from '../pool';
 
 export class VaultNative extends Vault {
   static readonly DEPOSIT_LIQUIDITY = 0xd55e4686;
@@ -35,7 +36,7 @@ export class VaultNative extends Vault {
     {
       queryId,
       amount,
-      isStable,
+      poolType,
       assets,
       minimalLPAmount,
       targetBalances,
@@ -44,7 +45,7 @@ export class VaultNative extends Vault {
     }: {
       queryId?: bigint | number;
       amount: bigint;
-      isStable: boolean;
+      poolType: PoolType;
       assets: [Asset, Asset];
       minimalLPAmount?: bigint;
       targetBalances: [bigint, bigint];
@@ -58,7 +59,7 @@ export class VaultNative extends Vault {
         .storeUint(VaultNative.DEPOSIT_LIQUIDITY, 32)
         .storeUint(queryId ?? 0, 64)
         .storeCoins(amount)
-        .storeBit(isStable)
+        .storeUint(poolType, 1)
         .storeSlice(assets[0].toSlice())
         .storeSlice(assets[1].toSlice())
         .storeRef(

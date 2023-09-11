@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Address, Contract, ContractProvider } from '@ton/core';
+import { Address, beginCell, Cell, Contract, ContractProvider } from '@ton/core';
 import { Asset, ReadinessStatus } from '../common';
 import { PoolType } from './PoolType';
+import { JettonWallet } from '../../jettons';
 
 export class Pool implements Contract {
   protected constructor(readonly address: Address) {}
@@ -107,5 +108,17 @@ export class Pool implements Contract {
     const denominator = result.stack.readNumber();
 
     return numerator / denominator;
+  }
+
+  async getWalletAddress(provider: ContractProvider, ownerAddress: Address): Promise<Address> {
+    const result = await provider.get('get_wallet_address', [
+      { type: 'slice', cell: beginCell().storeAddress(ownerAddress).endCell() },
+    ]);
+
+    return result.stack.readAddress();
+  }
+
+  async getWallet(provider: ContractProvider, ownerAddress: Address): Promise<JettonWallet> {
+    return JettonWallet.createFromAddress(await this.getWalletAddress(provider, ownerAddress));
   }
 }

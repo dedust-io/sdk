@@ -7,6 +7,7 @@
 import { Address, beginCell, Cell, ContractProvider } from '@ton/core';
 import { SwapParams, SwapStep, Vault } from './Vault';
 import { Asset, ReadinessStatus } from '../common';
+import { PoolType } from '../pool';
 
 export class VaultJetton extends Vault {
   static readonly DEPOSIT_LIQUIDITY = 0x40e108d6;
@@ -31,20 +32,15 @@ export class VaultJetton extends Vault {
     return stack.readBoolean() ? ReadinessStatus.READY : ReadinessStatus.NOT_READY;
   }
 
-  /**
-   * deposit_liquidity pool_ref:PoolRef min_lp_amount:Coins
-   *                   asset0_target_balance:Coins asset1_target_balance:Coins
-   *                   fulfill_payload:(Maybe ^Cell) reject_payload:(Maybe ^Cell) = ForwardPayload;
-   */
   static createDepositLiquidityPayload({
-    isStable,
+    poolType,
     assets,
     minimalLpAmount,
     targetBalances,
     fulfillPayload,
     rejectPayload,
   }: {
-    isStable: boolean;
+    poolType: PoolType;
     assets: [Asset, Asset];
     minimalLpAmount?: bigint;
     targetBalances: [bigint, bigint];
@@ -53,7 +49,7 @@ export class VaultJetton extends Vault {
   }): Cell {
     return beginCell()
       .storeUint(VaultJetton.DEPOSIT_LIQUIDITY, 32)
-      .storeBit(isStable)
+      .storeUint(poolType, 1)
       .storeSlice(assets[0].toSlice())
       .storeSlice(assets[1].toSlice())
       .storeCoins(minimalLpAmount ?? 0)

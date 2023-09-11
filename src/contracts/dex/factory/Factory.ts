@@ -16,6 +16,7 @@ import {
 import { Pool, PoolType } from '../pool';
 import { Asset } from '../common';
 import { VaultJetton, VaultNative } from '../vault';
+import { LiquidityDeposit } from '../liquidity-deposit';
 
 export class Factory implements Contract {
   static readonly CREATE_VAULT = 0x21cfe02b;
@@ -116,11 +117,11 @@ export class Factory implements Contract {
     provider: ContractProvider,
     {
       ownerAddress,
-      isStable,
+      poolType,
       assets,
     }: {
       ownerAddress: Address;
-      isStable: boolean;
+      poolType: PoolType;
       assets: [Asset, Asset];
     },
   ): Promise<Address> {
@@ -129,11 +130,32 @@ export class Factory implements Contract {
         type: 'slice',
         cell: beginCell().storeAddress(ownerAddress).asCell(),
       },
-      { type: 'int', value: BigInt(isStable) },
+      { type: 'int', value: BigInt(poolType) },
       { type: 'slice', cell: assets[0].toSlice().asCell() },
       { type: 'slice', cell: assets[1].toSlice().asCell() },
     ]);
 
     return result.stack.readAddress();
+  }
+
+  async getLiquidityDeposit(
+    provider: ContractProvider,
+    {
+      ownerAddress,
+      poolType,
+      assets,
+    }: {
+      ownerAddress: Address;
+      poolType: PoolType;
+      assets: [Asset, Asset];
+    },
+  ): Promise<LiquidityDeposit> {
+    const liquidityDepositAddress = await this.getLiquidityDepositAddress(provider, {
+      ownerAddress,
+      poolType,
+      assets,
+    });
+
+    return LiquidityDeposit.createFromAddress(liquidityDepositAddress);
   }
 }
