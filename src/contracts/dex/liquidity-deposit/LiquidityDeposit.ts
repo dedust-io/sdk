@@ -14,7 +14,7 @@ import {
   SendMode,
   toNano,
 } from '@ton/core';
-import { Asset } from '../common';
+import { Asset, ReadinessStatus } from '../common';
 import { PoolType } from '../pool';
 
 export class LiquidityDeposit implements Contract {
@@ -71,6 +71,16 @@ export class LiquidityDeposit implements Contract {
   async getMinimalLPAmount(provider: ContractProvider): Promise<bigint> {
     const result = await provider.get('get_min_lp_amount', []);
     return result.stack.readBigNumber();
+  }
+
+  async getReadinessStatus(provider: ContractProvider): Promise<ReadinessStatus> {
+    const state = await provider.getState();
+
+    if (state.state.type !== 'active') {
+      return ReadinessStatus.NOT_DEPLOYED;
+    }
+
+    return ReadinessStatus.READY;
   }
 
   async sendCancelDeposit(
