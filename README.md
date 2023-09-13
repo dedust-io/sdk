@@ -9,6 +9,12 @@
 <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"></a>
 </p>
 
+## Documentation
+
+- [DeDust SDK](https://docs.dedust.io/docs/getting-started)
+- [DeDust Protocol](https://docs.dedust.io/reference/tlb-schemes)
+- [DeDust API](https://docs.dedust.io/reference/getting-available-pools)
+
 ## Features
 
 - Multi-hop trades (which allows to swap token A to D using intermediate steps, e.g. `A -> B -> C`)
