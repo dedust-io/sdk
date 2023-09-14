@@ -1,6 +1,6 @@
 {
   "name": "@dedust/sdk",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "SDK for DeDust Protocol v2",
   "license": "Apache-2.0",
   "homepage": "https://dedust.io",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@ton/core": "^0.52.0",
     "@ton/crypto": "^3.2.0",
+    "@tonconnect/sdk": ">=2.1.2",
     "@tsconfig/node18": "^18.2.1",
     "@types/node": "^20.5.9",
     "axios": "^1.5.0",
@@ -28,8 +29,9 @@
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "axios": ">=1.5.0",
-    "@ton/core": ">=0.52.0"
+    "@ton/core": ">=0.52.0",
+    "@tonconnect/sdk": ">=2.1.2",
+    "axios": ">=1.5.0"
   },
   "scripts": {
     "build": "tsc",

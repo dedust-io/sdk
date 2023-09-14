@@ -7,3 +7,4 @@ export * from './contracts/dex/proofs';
 export * from './contracts/dex/vault';
 export * from './contracts/jettons';
 export * from './constants';
+export * from './helpers';
