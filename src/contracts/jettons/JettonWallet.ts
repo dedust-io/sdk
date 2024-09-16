@@ -41,19 +41,32 @@ export class JettonWallet implements Contract {
       forwardPayload?: Cell;
     },
   ) {
+    const builder = beginCell();
+    builder.storeUint(JettonWallet.TRANSFER, 32);
+    builder.storeUint(queryId ?? 0, 64);
+    builder.storeCoins(amount);
+    builder.storeAddress(destination);
+    builder.storeAddress(responseAddress);
+
+    if (customPayload) {
+      builder.storeBit(true);
+      builder.storeRef(customPayload);
+    } else {
+      builder.storeBit(false);
+    }
+
+    builder.storeCoins(forwardAmount ?? 0);
+    if (forwardPayload) {
+      builder.storeBit(true);
+      builder.storeRef(forwardPayload);
+    } else {
+      builder.storeBit(false);
+    }
+    const txBody = builder.endCell();
     await provider.internal(via, {
       value,
       sendMode: SendMode.PAY_GAS_SEPARATELY,
-      body: beginCell()
-        .storeUint(JettonWallet.TRANSFER, 32)
-        .storeUint(queryId ?? 0, 64)
-        .storeCoins(amount)
-        .storeAddress(destination)
-        .storeAddress(responseAddress)
-        .storeMaybeRef(customPayload)
-        .storeCoins(forwardAmount ?? 0)
-        .storeMaybeRef(forwardPayload)
-        .endCell(),
+      body: txBody,
     });
   }
 
