@@ -72,7 +72,7 @@ export class VaultNative extends Vault {
         .storeMaybeRef(fulfillPayload)
         .storeMaybeRef(rejectPayload)
         .endCell(),
-      value: amount + toNano('0.15'),
+      value: amount + toNano('0.3'),
     });
   }
 

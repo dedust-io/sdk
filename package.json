@@ -1,6 +1,6 @@
 {
   "name": "@dedust/sdk",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "SDK for DeDust Protocol v2",
   "license": "Apache-2.0",
   "homepage": "https://dedust.io",
